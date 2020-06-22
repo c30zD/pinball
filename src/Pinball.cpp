@@ -12,6 +12,9 @@
         Dec. 9, 2017:
             Reset key is no longer hard-coded. (c30zD)
 
+        Jun. 22, 2020:
+            Notify that a key binding has changed. (c30zD)
+
 ***************************************************************************/
 
 #include <fstream>
@@ -152,6 +155,7 @@ protected:
     EMKey key = Keyboard::waitForKey();
     string name(m_Name);
     Config::getInstance()->setKey(name, key);
+    Config::getInstance()->notify();
     return EM_MENU_NOP;
   }
   const char * getText() {

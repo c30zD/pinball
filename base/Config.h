@@ -5,6 +5,12 @@
     begin                : Wed Jan 26 2000
     copyright            : (C) 2000 by Henrik Enqvist
     email                : henqvist@excite.com
+
+    ========================= Modifications =========================
+
+        June 22, 2020:
+            - Inherit from ObservedSubject. (c30zD)
+
 ***************************************************************************/
 
 #ifndef CONFIG_H
@@ -16,6 +22,7 @@
 
 #include "EMath.h"
 #include "Keyboard.h"
+#include "ObservedSubject.h"
 
 #ifndef PRIVATE_H
 #error "Must include Private.h before Config.h"
@@ -32,7 +39,7 @@
 
 
 /** */
-class Config
+class Config : public ObservedSubject
 {
 protected:
   Config();

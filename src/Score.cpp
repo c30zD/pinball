@@ -12,6 +12,7 @@
     20171209  c30zD      : Correctly display the "reset" and "launch" keys.
     20171213  c30zD      : Fix previous strings for gettext usage.
     20170209  sergiomb2  : Fix previous not use array with limited size
+    20200622  c30zD      : Update displayed keys if they're modified.
 
 ***************************************************************************/
 
@@ -38,6 +39,7 @@
 Score::Score() {
   m_Font = EmFont::getInstance();
   this->clear();
+  Config::getInstance()->attach(this);
 }
 
 Score::~Score(){
@@ -92,6 +94,8 @@ void Score::StdOnSignal() {
     this->clear();
     asprintf(&pStrMsg, gettext("press %s to launch ball"), cfg->getKeyCommonName(cfg->getKey("launch")));
     this->setText1(pStrMsg);
+    m_bOnStart = true;
+    m_bOnGameOver = false;
     SendSignal( PBL_SIG_CLEAR_TEXT, 400, this->getParent(), NULL );
   } 
   ElseOnSignal( PBL_SIG_TILT ) {
@@ -106,6 +110,8 @@ void Score::StdOnSignal() {
   }
   ElseOnSignal( PBL_SIG_CLEAR_TEXT ) {
     this->clearText();
+    m_bOnStart = false;
+    m_bOnGameOver = false;
   }
   ElseOnSignal( PBL_SIG_BALL_ON ) {
     //this->clearText();
@@ -131,6 +137,8 @@ void Score::StdOnSignal() {
     this->setText3(gettext("game over"));
     asprintf(&pStrMsg, gettext("press %s to start new game"), cfg->getKeyCommonName(cfg->getKey("reset")));
     this->setText4(pStrMsg);
+    m_bOnStart = false;
+    m_bOnGameOver = true;
   }
 }
 
@@ -193,4 +201,20 @@ bool Score::testForHighScore() {
     return true;
   }
   return false;
+}
+
+void Score::update() {
+  // Mimic StdOnSignal in what affects displaying Config values
+  // Booleans are just an easy way to store the current game state
+  // Copying the empty string is to avoid calling this->clearText()
+  char *pStrMsg;
+  if (m_bOnStart) {
+    strcpy(m_Text1, "");
+    asprintf(&pStrMsg, gettext("press %s to launch ball"), cfg->getKeyCommonName(cfg->getKey("launch")));
+    this->setText1(pStrMsg);
+  } else if (m_bOnGameOver) {
+    strcpy(m_Text4, "");
+    asprintf(&pStrMsg, gettext("press %s to start new game"), cfg->getKeyCommonName(cfg->getKey("reset")));
+    this->setText4(pStrMsg);
+  }
 }

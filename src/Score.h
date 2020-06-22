@@ -5,6 +5,10 @@
     begin                : Fri Jan 26 2001
     copyright            : (C) 2001 by Henrik Enqvist
     email                : henqvist@excite.com
+
+    modifs
+    20200622  c30zD      : Inherit from Observer and add two game state booleans
+
 ***************************************************************************/
 
 
@@ -13,6 +17,7 @@
 
 #include "Behavior.h"
 #include "StateMachine.h"
+#include "Observer.h"
 
 class EmFont;
 
@@ -24,7 +29,7 @@ class EmFont;
 */
 
 /** @author Henrik Enqvist */
-class Score : public Behavior  {
+class Score : public Behavior, public Observer  {
  public:
   Score();
   ~Score();
@@ -49,6 +54,7 @@ class Score : public Behavior  {
 /*   int getMultiplier() { return m_iFactor; }; */
 
   bool testForHighScore();
+  void update();
 
  private:
   char m_Text1[64];
@@ -64,6 +70,10 @@ class Score : public Behavior  {
 
   bool m_bExtraBall;
   int m_iHiScore;
+
+  // Two booleans for an easy way to keep track of the current game state
+  bool m_bOnStart;
+  bool m_bOnGameOver;
 };
 
 #endif // SCORE_H
